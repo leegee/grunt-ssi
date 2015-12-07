@@ -107,7 +107,7 @@ module.exports = function(grunt) {
     // Please see the Grunt documentation for more information regarding task
     // creation: http://gruntjs.com/creating-tasks
 
-    grunt.registerMultiTask('ssi', 'Parse server-side includes to generate HTML', function() {
+    grunt.registerMultiTask('ssis', 'Parse server-side includes to generate HTML', function() {
         var path = require('path');
         var done = this.async();
         var totalProcessed = 0;
