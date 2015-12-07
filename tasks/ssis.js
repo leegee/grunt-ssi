@@ -113,7 +113,7 @@ module.exports = function(grunt) {
         var done = this.async();
         var totalProcessed = 0;
         var converter = new SsiConverter({
-            documentRoot: path.resolve(this.data.documentRoot || __dirname + path.sep + '..' )
+            documentRoot: path.resolve(this.data.documentRoot || './' )
         });
         var ext = this.data.ext || '.html';
 
