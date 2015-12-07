@@ -28,7 +28,6 @@ var includesRE  = /<!--#include\s+(file|virtual)\s*=\s*(?!-->)(.+?)\s*-->/ig,
 
 function SsiConverter (args) {
     this.documentRoot = args.documentRoot;
-    console.log('this.documentRoot=',this.documentRoot);
 }
 
 SsiConverter.prototype.convert = function (filePath, variables) {
@@ -118,15 +117,16 @@ module.exports = function(grunt) {
         var ext = this.data.ext || '.html';
 
         this.files.forEach(function(files) {
-            grunt.log.writeln('Processing ' + files.src.length + ' files.');
+            grunt.verbose.writeln('Processing ' + files.src.length + ' files.');
             files.src.forEach( function(file){
                 var fileBits = path.parse(file);
                 var destFile = path.join(
                     fileBits.dir, fileBits.name + ext
                 );
-                grunt.log.writeln('Now processing %s as %s:', file, destFile);
+                grunt.verbose.write('Now processing %s as %s:', file, destFile);
                 var html = converter.convert(file);
                 converter.save(destFile, html);
+                grunt.verbose.write( " - done.\n");
                 if (++totalProcessed === files.src.length) {
                     done(files);
                 }
