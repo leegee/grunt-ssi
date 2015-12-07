@@ -15,6 +15,8 @@ Quotation characters may be `'` or `"`.
 
 All encodings are expected to be UTF-8.
 
+Files are output alongside input files, with an `.html` extension (see the `ext` option).
+
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
 
@@ -39,6 +41,7 @@ In your project's Gruntfile, add a section named `ssi` to the data object passed
 grunt.initConfig({
   ssi: {
     build: {
+      ext: '.html',
       documentRoot: '.',
       src: ['test/fixtures/1.shtml']
     }
@@ -54,6 +57,12 @@ Default value: `.`
 
 A string value that is used as the base HTML directory of the server,
 ala the Apache document root.
+
+#### ext
+Type: `String`
+Default value: `.html`
+
+A string value that is used as the extension for output files — should include a dot, if one is required.
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).

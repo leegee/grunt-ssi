@@ -31,6 +31,7 @@ module.exports = function(grunt) {
     // Configuration to be run (and then tested).
     ssi: {
         build: {
+            ext: '.html',
             documentRoot: '.',
             src: ['test/fixtures/1.shtml']
         }

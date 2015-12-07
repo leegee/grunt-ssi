@@ -114,13 +114,14 @@ module.exports = function(grunt) {
         var converter = new SsiConverter({
             documentRoot: this.data.documentRoot || __dirname
         });
+        var ext = this.data.ext || '.html';
 
         this.files.forEach(function(files) {
             grunt.log.writeln('Processing ' + files.src.length + ' files.');
             files.src.forEach( function(file){
                 var fileBits = path.parse(file);
                 var destFile = path.join(
-                    fileBits.dir, fileBits.name + '.html'
+                    fileBits.dir, fileBits.name + ext
                 );
                 grunt.log.writeln('Now processing %s as %s:', file, destFile);
                 var html = converter.convert(file);
