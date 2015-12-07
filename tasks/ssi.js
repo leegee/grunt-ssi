@@ -17,22 +17,62 @@
 */
 
 var fs   = require('fs'),
-    path = require('path');
+    path = require('path')
+;
 
-var RE = /<!--#include\s+virtual\s*=\s*(?!-->)(.+?)\s*-->/ig;
+var includesRE  = /<!--#include\s+virtual\s*=\s*(?!-->)(.+?)\s*-->/ig,
+    variablesRE = /<!--#set\s+var\s*=\s*(?!-->)(.+?)\s*-->/ig,
+    echoesRE    =  /<!--#echo\s+(?!-->)(.+?)\s*-->/ig
+;
+
 
 function SsiConverter (args) {
     this.documentRoot = args.documentRoot;
 }
 
-SsiConverter.prototype.convert = function (filePath) {
+SsiConverter.prototype.convert = function (filePath, variables) {
     var name,
         self = this,
-        root = path.dirname( filePath );
-    this.html = fs.readFileSync(filePath, "utf8");
+        root = path.dirname( filePath ),
+
+        html = fs.readFileSync(filePath, "utf8"),
+
+        includeMatches  = html.match(includesRE) || [],
+        variableMatches = html.match(variablesRE) || [],
+        echoMatches     = html.match(echoesRE) || []
+    ;
+
+    variables = variables || {};
     // this.documentRoot
 
-    this.html.match(RE).forEach( function (matchedSsi){
+    // Set vars
+    variableMatches.forEach( function (matchedSsi){
+        var m, name, value;
+        if ((m = matchedSsi.match(/'(.+?)'.*?'(.+?)'/)) !== null){
+            name = m[1];
+            value = m[2];
+        }
+        else if ((m = matchedSsi.match(/"(.+?)".*?"(.+?)"/)) !== null){
+            name = m[1];
+            value = m[2];
+        }
+        variables[name] = value;
+        html = html.replace( matchedSsi, '');
+    });
+
+    // Render vars
+    echoMatches.forEach( function (matchedSsi){
+        var m, name;
+        if ((m = matchedSsi.match(/var\s*=\s*'(.+?)'/)) !== null){
+            name = m[1];
+        }
+        else if ((m = matchedSsi.match(/var\s*=\s*"(.+?)"/)) !== null){
+            name = m[1];
+        }
+        html = html.replace( matchedSsi, variables[name]);
+    });
+
+    includeMatches.forEach( function (matchedSsi){
         var m, includePath;
         if ((m = matchedSsi.match(/'(.+)'/)) !== null){
             includePath = m[1];
@@ -45,17 +85,19 @@ SsiConverter.prototype.convert = function (filePath) {
         }
 
         includePath = path.resolve( path.join( root, includePath ));
-        var includeHtml = fs.readFileSync(includePath, "utf8");
+
+        // var includeHtml = fs.readFileSync(includePath, "utf8");
+        var includeHtml = this.convert( includePath, variables );
+
         // // Change this to parse the include for SSIs, maybe caching:
-        this.html = this.html.replace( matchedSsi, includeHtml, 'gi' );
+        html = html.replace( matchedSsi, includeHtml, 'gi' );
     }, this);
 
-    return this;
+    return html;
 };
 
-SsiConverter.prototype.save = function (path) {
-    fs.writeFileSync(path, this.html);
-    return this;
+SsiConverter.prototype.save = function (path, html) {
+    fs.writeFileSync(path, html);
 };
 
 
@@ -81,8 +123,8 @@ module.exports = function(grunt) {
                     fileBits.dir, fileBits.name + '.html'
                 );
                 grunt.log.writeln('Now processing %s as %s:', file, destFile);
-                converter.convert(file);
-                converter.save(destFile);
+                var html = converter.convert(file);
+                converter.save(destFile, html);
                 if (++totalProcessed === files.src.length) {
                     done(true);
                 }

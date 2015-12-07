@@ -1,4 +1,4 @@
- <!--#set var="avariable" value="avalue" -->
+<!--#set var="avariable" value="avalue" -->
 <!--#include virtual="header.shtml" -->
 
 Body

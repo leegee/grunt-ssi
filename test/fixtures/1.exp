@@ -1,5 +1,6 @@
- <!--#set var="avariable" value="avalue" -->
+
 A header.
+VARIABLE:/avalue/
 
 
 Body
