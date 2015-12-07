@@ -1,6 +1,19 @@
 # grunt-ssi
 
-> Parse server-side includes to generate HTML
+> Parse very basic server-side includes to generate HTML
+
+Supports virtual includes:
+
+    <!--#include virtual="header.shtml" -->
+
+Supports variables — but ignores any 'encoding' attribute:
+
+    <!--#echo encoding="none" var="avariable" -->
+    <!--#echo var="avariable" -->
+
+Quotation characters may be `'` or `"`.
+
+All encodings are expected to be UTF-8.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
