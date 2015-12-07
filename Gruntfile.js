@@ -1,5 +1,5 @@
 /*
- * grunt-ssi
+ * grunt-ssis
  * https://github.com/lee/grunt-ssi
  *
  * Copyright (c) 2015 Lee Goddard

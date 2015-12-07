@@ -1,6 +1,6 @@
 /*
- * grunt-ssi
- * https://github.com/lee/grunt-ssi
+ * grunt-ssis
+ * https://github.com/lee/grunt-ssis
  *
  * Copyright (c) 2015 Lee Goddard
  * Licensed under the MIT license.
@@ -127,7 +127,7 @@ module.exports = function(grunt) {
                 var html = converter.convert(file);
                 converter.save(destFile, html);
                 if (++totalProcessed === files.src.length) {
-                    done(true);
+                    done(files);
                 }
             });
         });

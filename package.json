@@ -1,5 +1,5 @@
 {
-  "name": "grunt-ssi",
+  "name": "grunt-ssis",
   "description": "Parse server-side includes to generate HTML",
   "version": "0.1.0",
   "homepage": "https://github.com/lee/grunt-ssi",
