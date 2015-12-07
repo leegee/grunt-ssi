@@ -33,7 +33,7 @@ module.exports = function(grunt) {
         build: {
             ext: '.html',
             documentRoot: '.',
-            src: ['test/fixtures/1.shtml']
+            src: ['test/fixtures/foo/1.shtml']
         }
     },
 
