@@ -15,7 +15,7 @@ Quotation characters may be `'` or `"`.
 
 All encodings are expected to be UTF-8.
 
-Files are output alongside input files, with an `.html` extension (see the `ext` option).
+Files are output in `output`, with an `.html` extension (see the `ext` option).
 
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
