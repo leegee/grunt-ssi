@@ -32,7 +32,7 @@ module.exports = function(grunt) {
     ssis: {
         build: {
             ext: '.html',
-            documentRoot: '.',
+            // documentRoot: '.',
             src: ['test/fixtures/foo/1.shtml']
         }
     },

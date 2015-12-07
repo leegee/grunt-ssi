@@ -44,7 +44,6 @@ SsiConverter.prototype.convert = function (filePath, variables) {
     ;
 
     variables = variables || {};
-    // this.documentRoot
 
     // Set vars
     variableMatches.forEach( function (matchedSsi){
@@ -114,7 +113,7 @@ module.exports = function(grunt) {
         var done = this.async();
         var totalProcessed = 0;
         var converter = new SsiConverter({
-            documentRoot: path.resolve(this.data.documentRoot) || __dirname
+            documentRoot: path.resolve(this.data.documentRoot || __dirname + path.sep + '..' )
         });
         var ext = this.data.ext || '.html';
 
