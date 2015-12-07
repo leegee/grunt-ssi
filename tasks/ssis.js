@@ -20,7 +20,7 @@ var fs   = require('fs'),
     path = require('path')
 ;
 
-var includesRE  = /<!--#include\s+virtual\s*=\s*(?!-->)(.+?)\s*-->/ig,
+var includesRE  = /<!--#include\s+(file|virtual)\s*=\s*(?!-->)(.+?)\s*-->/ig,
     variablesRE = /<!--#set\s+var\s*=\s*(?!-->)(.+?)\s*-->/ig,
     echoesRE    =  /<!--#echo\s+(?!-->)(.+?)\s*-->/ig
 ;

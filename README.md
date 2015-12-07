@@ -5,6 +5,7 @@
 Supports virtual includes:
 
     <!--#include virtual="header.shtml" -->
+    <!--#include file="header.shtml" -->
 
 Supports variables — but ignores any 'encoding' attribute:
 
