@@ -3,4 +3,4 @@
 
 Body
 
-<!--#include virtual="footer.shtml" -->
+<!--#include virtual="/test/fixtures/footer.shtml" -->

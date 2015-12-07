@@ -28,12 +28,13 @@ var includesRE  = /<!--#include\s+(file|virtual)\s*=\s*(?!-->)(.+?)\s*-->/ig,
 
 function SsiConverter (args) {
     this.documentRoot = args.documentRoot;
+    console.log('this.documentRoot=',this.documentRoot);
 }
 
 SsiConverter.prototype.convert = function (filePath, variables) {
     var name,
         self = this,
-        root = path.dirname( filePath ),
+        thisDir = path.dirname( filePath ),
 
         html = fs.readFileSync(filePath, "utf8"),
 
@@ -84,13 +85,14 @@ SsiConverter.prototype.convert = function (filePath, variables) {
             includePath = matchedSsi.match( /=\s*(\S+)-->\s*$/ );
         }
 
-        includePath = path.resolve( path.join( root, includePath ));
+        var dir = path.isAbsolute(includePath)? this.documentRoot : thisDir;
 
-        // var includeHtml = fs.readFileSync(includePath, "utf8");
+        includePath = path.resolve( path.join( dir, includePath ));
+
         var includeHtml = this.convert( includePath, variables );
 
-        // // Change this to parse the include for SSIs, maybe caching:
         html = html.replace( matchedSsi, includeHtml, 'gi' );
+
     }, this);
 
     return html;
@@ -112,7 +114,7 @@ module.exports = function(grunt) {
         var done = this.async();
         var totalProcessed = 0;
         var converter = new SsiConverter({
-            documentRoot: this.data.documentRoot || __dirname
+            documentRoot: path.resolve(this.data.documentRoot) || __dirname
         });
         var ext = this.data.ext || '.html';
 
