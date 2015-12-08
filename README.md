@@ -16,7 +16,7 @@ Quotation characters may be `'` or `"`.
 
 All encodings are expected to be UTF-8.
 
-Files are output in `output`, with an `.html` extension (see the `ext` option).
+By default, files are output alongside input, using the extension supplied in the `ext` parameter (b default, `.html` — see below). Output files can be located elsewhere — see `toRoot` and `fromRoot` below.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
@@ -64,6 +64,30 @@ Type: `String`
 Default value: `.html`
 
 A string value that is used as the extension for output files — should include a dot, if one is required.
+
+#### fromRoot
+Type: `String`
+
+See `toRoot` below.
+
+#### toRoot
+Type: `String`
+
+If `toRoot` and `fromRoot` are supplied, then the former is replaced in the latter to produce the path for the output file. For example:
+
+```js
+grunt.initConfig({
+  ssi: {
+    build: {
+      src: ['test/fixtures/input/foo/1.shtml'],
+      fromRoot: 'test/fixtures/input/',
+      toRoot: 'test/fixtures/output/'
+    }
+  },
+});
+```
+
+In the above example, the file `test/fixtures/input/foo/1.shtml` would be output to `test/fixtures/output/foo/1.shtml`.
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).

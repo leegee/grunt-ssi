@@ -10,7 +10,6 @@
 
 module.exports = function(grunt) {
 
-  // Project configuration.
   grunt.initConfig({
     jshint: {
       all: [
@@ -25,7 +24,7 @@ module.exports = function(grunt) {
 
     // Before generating any new files, remove any previously-created files.
     clean: {
-      tests: ['test/fixtures/*.html']
+      tests: ['test/fixtures/*.html', 'test/output/**/*.html']
     },
 
     // Configuration to be run (and then tested).
@@ -33,6 +32,8 @@ module.exports = function(grunt) {
         build: {
             ext: '.html',
             // documentRoot: '.',
+            fromRoot: 'test/fixtures/',
+            toRoot: 'test/output/',
             src: ['test/fixtures/foo/1.shtml']
         }
     },

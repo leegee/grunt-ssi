@@ -22,7 +22,7 @@ var fs   = require('fs'),
 
 var includesRE  = /<!--#include\s+(file|virtual)\s*=\s*(?!-->)(.+?)\s*-->/ig,
     variablesRE = /<!--#set\s+var\s*=\s*(?!-->)(.+?)\s*-->/ig,
-    echoesRE    =  /<!--#echo\s+(?!-->)(.+?)\s*-->/ig
+    echoesRE    = /<!--#echo\s+(?!-->)(.+?)\s*-->/ig
 ;
 
 
@@ -32,10 +32,10 @@ function SsiConverter (args) {
 
 SsiConverter.prototype.convert = function (filePath, variables) {
     var name,
-        self = this,
+        self    = this,
         thisDir = path.dirname( filePath ),
 
-        html = fs.readFileSync(filePath, "utf8"),
+        html    = fs.readFileSync(filePath, "utf8"),
 
         includeMatches  = html.match(includesRE) || [],
         variableMatches = html.match(variablesRE) || [],
@@ -48,11 +48,11 @@ SsiConverter.prototype.convert = function (filePath, variables) {
     variableMatches.forEach( function (matchedSsi){
         var m, name, value;
         if ((m = matchedSsi.match(/'(.+?)'.*?'(.+?)'/)) !== null){
-            name = m[1];
+            name  = m[1];
             value = m[2];
         }
         else if ((m = matchedSsi.match(/"(.+?)".*?"(.+?)"/)) !== null){
-            name = m[1];
+            name  = m[1];
             value = m[2];
         }
         variables[name] = value;
@@ -85,9 +85,10 @@ SsiConverter.prototype.convert = function (filePath, variables) {
 
         var dir = path.isAbsolute(includePath)? this.documentRoot : thisDir;
 
-        includePath = path.resolve( path.join( dir, includePath ));
-
-        var includeHtml = this.convert( includePath, variables );
+        var includeHtml = this.convert(
+            path.resolve( path.join( dir, includePath )),
+            variables
+        );
 
         html = html.replace( matchedSsi, includeHtml, 'gi' );
 
@@ -103,29 +104,49 @@ SsiConverter.prototype.save = function (path, html) {
 
 
 module.exports = function(grunt) {
-
-    // Please see the Grunt documentation for more information regarding task
-    // creation: http://gruntjs.com/creating-tasks
-
     grunt.registerMultiTask('ssis', 'Parse server-side includes to generate HTML', function() {
-        var path = require('path');
-        var done = this.async();
-        var totalProcessed = 0;
-        var converter = new SsiConverter({
-            documentRoot: path.resolve(this.data.documentRoot || './' )
-        });
-        var ext = this.data.ext || '.html';
+        var path = require('path'),
+            done = this.async(),
+            ext  = this.data.ext || '.html',
+            totalProcessed = 0,
+            converter = new SsiConverter({
+                documentRoot: path.resolve(this.data.documentRoot || './' )
+            })
+        ;
+
+        var fromRoot, toRoot, stat;
+        if (typeof this.data.fromRoot !== 'undefined' && typeof this.data.toRoot !== 'undefined' ){
+            fromRoot = path.normalize( this.data.fromRoot );
+            toRoot   = path.normalize( this.data.toRoot );
+            grunt.verbose.writeln('Uproot from ', fromRoot, ' into ', toRoot);
+        }
 
         this.files.forEach(function(files) {
             grunt.verbose.writeln('Processing ' + files.src.length + ' files.');
             files.src.forEach( function(file){
-                var fileBits = path.parse(file);
-                var destFile = path.join(
-                    fileBits.dir, fileBits.name + ext
-                );
-                grunt.verbose.write('Now processing %s as %s:', file, destFile);
+                var fileBits = path.parse(file),
+                    destPath = path.join(
+                        fileBits.dir, fileBits.name + ext
+                    );
+
+                if (fromRoot !== null){
+                    destPath = destPath.replace( fromRoot, toRoot );
+                    var destBits = path.parse(destPath);
+                    try {
+                        stat = fs.statSync( destBits.dir );
+                    }
+                    catch (e){
+                        if (!stat){
+                            grunt.log.writeln('Creating directory ',destBits.dir);
+                            fs.mkdirSync( destBits.dir );
+                        }
+                    }
+                }
+
+                grunt.verbose.write('Now processing %s as %s:', file, destPath);
+
                 var html = converter.convert(file);
-                converter.save(destFile, html);
+                converter.save(destPath, html);
                 grunt.verbose.write( " - done.\n");
                 if (++totalProcessed === files.src.length) {
                     done(files);

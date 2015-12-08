@@ -1,7 +1,7 @@
 {
   "name": "grunt-ssis",
   "description": "Parse server-side includes to generate HTML",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "homepage": "https://github.com/lee/grunt-ssi",
   "author": {
     "name": "Lee Goddard",
@@ -36,6 +36,6 @@
     "grunt": "~0.4.5"
   },
   "keywords": [
-    "gruntplugin"
+    "gruntplugin, ssi, server-side includes, shtml, template, parse, parser, substitution"
   ]
 }

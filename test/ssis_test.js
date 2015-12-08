@@ -25,7 +25,7 @@ var grunt = require('grunt');
 exports.ssis = {
   build: function(test) {
     test.expect(1);
-    var actual = grunt.file.read('test/fixtures/foo/1.html');
+    var actual = grunt.file.read('test/output/foo/1.html');
     var expected = grunt.file.read('test/fixtures/1.exp');
     test.equal(actual, expected, 'should compose HTML');
     test.done();
