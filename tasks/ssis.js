@@ -101,7 +101,9 @@ SsiConverter.prototype.save = function (path, html) {
     fs.writeFileSync(path, html);
 };
 
-
+function escapeRegExp(str) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
 
 module.exports = function(grunt) {
     grunt.registerMultiTask('ssis', 'Parse server-side includes to generate HTML', function() {
@@ -116,9 +118,9 @@ module.exports = function(grunt) {
 
         var fromRoot, toRoot, stat;
         if (typeof this.data.fromRoot !== 'undefined' && typeof this.data.toRoot !== 'undefined' ){
-            fromRoot = path.normalize( this.data.fromRoot );
+            fromRoot = escapeRegExp( path.normalize( this.data.fromRoot ) );
             toRoot   = path.normalize( this.data.toRoot );
-            grunt.verbose.writeln('Uproot from ', fromRoot, ' into ', toRoot);
+            grunt.verbose.writeln('Uproot from ', this.data.fromRoot, ' into ', toRoot);
         }
 
         this.files.forEach(function(files) {
@@ -130,13 +132,17 @@ module.exports = function(grunt) {
                     );
 
                 if (fromRoot !== null){
-                    destPath = destPath.replace( fromRoot, toRoot );
+                    if (fromRoot === '\\.'){
+                        destPath = path.join( toRoot, destPath );
+                    } else {
+                        destPath = destPath.replace( fromRoot, toRoot );
+                    }
                     var destBits = path.parse(destPath);
                     try {
                         stat = fs.statSync( destBits.dir );
                     }
                     catch (e){
-                        if (!stat){
+                        if (!stat && destBits.dir !== ''){
                             grunt.log.writeln('Creating directory ',destBits.dir);
                             fs.mkdirSync( destBits.dir );
                         }
@@ -147,6 +153,7 @@ module.exports = function(grunt) {
 
                 var html = converter.convert(file);
                 converter.save(destPath, html);
+
                 grunt.verbose.write( " - done.\n");
                 if (++totalProcessed === files.src.length) {
                     done(files);
